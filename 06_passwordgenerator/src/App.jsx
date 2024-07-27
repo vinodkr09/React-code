@@ -1,12 +1,18 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import './App.css'
 
 function App() {
+
+  //useState hooks
   const [length, setLength] = useState(8)
   const [numberAllowed, setNumberAllowed] = useState(false)
   const [charAllowed, setcharAllowed] = useState(false)
   const [password, setpassord] = useState("")
 
+  //useRef Hooks
+  const passwordRef = useRef(null)
+
+  // useCallback hooks
   const passwordGenertor = useCallback(() =>{
     let pass = ""
     let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmniopqrstuvwxyz"
@@ -17,17 +23,28 @@ function App() {
       str += "!@#$%^&*()"
     }
 
-    for(let i =1; i <=Array.length; i++){
+    for(let i =1; i <=length; i++){
       let char = Math.floor(Math.random() * str.length + 1)  //this is used to genertae a Random number
-      pass = str.charAt(char)
+      pass += str.charAt(char)
     }
 
     setpassord(pass)
 
-
-
   }, [length, numberAllowed, charAllowed,setpassord]) // usecallback ke andar 2 chiz pass hota hai ek function aur dusra dependencies joki array form me hota hai
+  
 
+  const copyPasswordToClipboard = useCallback(()=>{
+    passwordRef.current?.select();   // ? means optionally value select karwa rahe hai
+    passwordRef.current?.setSelectionRange(0,999);
+    window.navigator.clipboard.writeText(password)
+     
+  }, [password])
+
+ 
+  // useEffect Hooks
+useEffect(()=>{
+  passwordGenertor()
+}, [length, numberAllowed, charAllowed, passwordGenertor])
 
 
   return (
@@ -43,8 +60,11 @@ function App() {
          className='outline-none w-full py-2 px-3'
          placeholder="Password"
          readOnly
+         ref={passwordRef}
          />
-       <button className='outline-none bg-blue-700 text-white px-3 py-1 shrink-0'>copy</button>
+       <button 
+       onClick={copyPasswordToClipboard}
+       className='outline-none bg-blue-700 text-white px-3 py-1 shrink-0'>copy</button>
       </div>
 
       <div className='flex text-sm gap-x-2'>
