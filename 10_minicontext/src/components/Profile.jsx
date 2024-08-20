@@ -9,7 +9,7 @@ function Profile() {
    
     if(!user) return <div>please Login</div>
     else{
-        
+
     return <div>Welcome {user.username}</div>
 
     }
@@ -18,3 +18,4 @@ function Profile() {
 }
 
 export default Profile
+
